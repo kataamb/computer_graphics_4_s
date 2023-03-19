@@ -480,6 +480,7 @@ class RootWindow():
             relwidth=0.70
             )
         #create scrollbar
+        '''
         hbar = tk.Scrollbar(self.root, orient='horizontal')
         vbar = tk.Scrollbar(self.root, orient='vertical')
 
@@ -492,6 +493,7 @@ class RootWindow():
         hbar.pack(side='bottom', fill='x')
         vbar.pack(side='right', fill='y')
         #self.pltcnv.pack(side='left', expand=True, fill='both')
+        '''
 
 
         '''
@@ -551,4 +553,3 @@ if __name__ == "__main__":
     ROOT.funcs = TANK.full
     TANKS = update.History(0, [copy.deepcopy(TANK)])
     ROOT.run()
-    n = input()
