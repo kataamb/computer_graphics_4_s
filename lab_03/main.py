@@ -352,38 +352,59 @@ lineCurColourTextLabel.pack(fill='both', expand=True, side='top')
 lineCurColourLabel.pack(fill='both', expand=True, side='top')
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
-##############!!!
 # Построение линии
 LineMakeFrame = tk.Frame(dataFrame)
-
+LineMakeFrame.pack(fill='both', expand=True, side='top')
 
 
 lineMakeLabel = tk.Label(LineMakeFrame, bg=MAIN_COLOUR_LABEL_BG, text="ПОСТРОЕНИЕ ЛИНИИ",
                      font=("Consolas", 16),
                      fg=MAIN_COLOUR_LABEL_TEXT, relief=tk.SOLID)
 
-argumnetsLabel = tk.Label(LineMakeFrame, bg=MAIN_FRAME_COLOR, text="Xн         Yн         Xк          Yк",
-                     font=("Consolas", 14),
-                     fg=MAIN_COLOUR_LABEL_TEXT)
+lineMakeLabel.pack(fill='both', expand=True, side='top')
 
-xsEntry = tk.Entry(dataFrame, bg=MAIN_COLOUR_LABEL_TEXT, font=("Consolas", 14), fg=MAIN_FRAME_COLOR, justify="center")
-ysEntry = tk.Entry(dataFrame, bg=MAIN_COLOUR_LABEL_TEXT, font=("Consolas", 14), fg=MAIN_FRAME_COLOR, justify="center")
-xeEntry = tk.Entry(dataFrame, bg=MAIN_COLOUR_LABEL_TEXT, font=("Consolas", 14), fg=MAIN_FRAME_COLOR, justify="center")
-yeEntry = tk.Entry(dataFrame, bg=MAIN_COLOUR_LABEL_TEXT, font=("Consolas", 14), fg=MAIN_FRAME_COLOR, justify="center")
-drawLineBtn = tk.Button(dataFrame, bg=MAIN_COLOUR, fg=MAIN_COLOUR_LABEL_TEXT, text="Построить линию", font=("Consolas", 14),
+
+CoordinatesLabelFrame = tk.Frame(LineMakeFrame)
+CoordinatesLabelFrame.pack(fill='both', expand=True, side='top')
+
+#argumnetsLabel = tk.Label(CoordinatesLabelFrame, bg=MAIN_FRAME_COLOR, text="Xн         Yн         Xк          Yк",
+#                     font=("Consolas", 14),
+#                     fg=MAIN_COLOUR_LABEL_TEXT)
+
+# label'ы для координат
+labels_names = ['Xн',  'Yн', 'Xк', 'Yк']
+for name in labels_names:
+    label_name = tk.Label(CoordinatesLabelFrame, bg=MAIN_FRAME_COLOR, text=name,
+                          font=("Consolas", 14),
+                     fg=MAIN_COLOUR_LABEL_TEXT)
+    label_name.pack(fill='both', expand=True, side='left')
+
+
+CoordinatesInputFrame = tk.Frame(LineMakeFrame)
+CoordinatesInputFrame.pack(fill='both', expand=True, side='top')
+
+xsEntry = tk.Entry(CoordinatesInputFrame, bg=MAIN_COLOUR_LABEL_TEXT, font=("Consolas", 14), fg=MAIN_FRAME_COLOR, justify="center")
+ysEntry = tk.Entry(CoordinatesInputFrame, bg=MAIN_COLOUR_LABEL_TEXT, font=("Consolas", 14), fg=MAIN_FRAME_COLOR, justify="center")
+xeEntry = tk.Entry(CoordinatesInputFrame, bg=MAIN_COLOUR_LABEL_TEXT, font=("Consolas", 14), fg=MAIN_FRAME_COLOR, justify="center")
+yeEntry = tk.Entry(CoordinatesInputFrame, bg=MAIN_COLOUR_LABEL_TEXT, font=("Consolas", 14), fg=MAIN_FRAME_COLOR, justify="center")
+drawLineBtn = tk.Button(LineMakeFrame, bg=MAIN_COLOUR, fg=MAIN_COLOUR_LABEL_TEXT, text="Построить линию", font=("Consolas", 14),
                         command=drawLine)
 
 
-lineMakeLabel.place(x=0, y=14 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT, height=DATA_FRAME_HEIGHT // COLUMNS)
-argumnetsLabel.place(x=0, y=15 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT, height=DATA_FRAME_HEIGHT // COLUMNS)
-xsEntry.place(x=0, y=16 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT // 4, height=DATA_FRAME_HEIGHT // COLUMNS)
-ysEntry.place(x=DATA_FRAME_WIGHT // 4, y=16 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT // 4, height=DATA_FRAME_HEIGHT // COLUMNS)
-xeEntry.place(x=2 * DATA_FRAME_WIGHT // 4, y=16 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT // 4, height=DATA_FRAME_HEIGHT // COLUMNS)
-yeEntry.place(x=3 * DATA_FRAME_WIGHT // 4, y=16 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT // 4, height=DATA_FRAME_HEIGHT // COLUMNS)
-drawLineBtn.place(x=DATA_FRAME_WIGHT // 2 / 2.5, y=18 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT // 1.5, height=DATA_FRAME_HEIGHT // COLUMNS)
+xsEntry.pack(fill='both', expand=True, side='left')
+ysEntry.pack(fill='both', expand=True, side='left')
+xeEntry.pack(fill='both', expand=True, side='left')
+yeEntry.pack(fill='both', expand=True, side='left')
+drawLineBtn.pack(fill='both', expand=True, side='left')
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Построение спектра
+
+spectrumMakeLabel = tk.Label(dataFrame, bg=MAIN_COLOUR_LABEL_BG, text="ПОСТРОЕНИЕ СПЕКТРА",
+                     font=("Consolas", 16),
+                     fg=MAIN_COLOUR_LABEL_TEXT, relief=tk.SOLID)
+
+spectrumMakeLabel.pack(fill='both', expand=True, side='top')
 
 lineColourLabel = tk.Label(dataFrame, bg=MAIN_FRAME_COLOR, text="Угол поворота (в градуссах):",
                      font=12,
@@ -392,11 +413,17 @@ angleEntry = tk.Entry(dataFrame, bg=MAIN_COLOUR_LABEL_TEXT, font=("Consolas", 14
 drawSpnBtn = tk.Button(dataFrame, bg=MAIN_COLOUR, fg=MAIN_COLOUR_LABEL_TEXT, text="Построить спектр", font=("Consolas", 14),
                        command=drawSpecter)
 
-lineColourLabel.place(x=0, y=17 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT // 2, height=DATA_FRAME_HEIGHT // COLUMNS)
-angleEntry.place(x=DATA_FRAME_WIGHT // 2, y=17 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT // 4, height=DATA_FRAME_HEIGHT // COLUMNS)
-drawSpnBtn.place(x=DATA_FRAME_WIGHT // 2 / 2.5, y=19 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT // 1.5, height=DATA_FRAME_HEIGHT // COLUMNS)
+lineColourLabel.pack(fill='both', expand=True, side='top')
+angleEntry.pack(fill='both', expand=True, side='top')
+drawSpnBtn.pack(fill='both', expand=True, side='top')
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Кнопки сравнения, очистки и справки
+
+otherOptions = tk.Label(dataFrame, bg=MAIN_COLOUR_LABEL_BG, text="ДОПОЛНИТЕЛЬНО",
+                     font=("Consolas", 16),
+                     fg=MAIN_COLOUR_LABEL_TEXT, relief=tk.SOLID)
+
+otherOptions.pack(fill='both', expand=True, side='top')
 
 
 def show_info():
@@ -436,12 +463,12 @@ clearCanvasBtn = tk.Button(dataFrame, bg=MAIN_COLOUR, fg=MAIN_COLOUR_LABEL_TEXT,
 infoBtn = tk.Button(dataFrame, bg=MAIN_COLOUR, fg=MAIN_COLOUR_LABEL_TEXT, text="Справка", font=("Consolas", 14),
                     command=show_info)
 
-lineLengthLabel.place(x=0, y=22 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT // 4, height=DATA_FRAME_HEIGHT // COLUMNS)
-lengthEntry .place(x=DATA_FRAME_WIGHT // 4, y=22 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT // 4, height=DATA_FRAME_HEIGHT // COLUMNS)
-compareTimenBtn.place(x=20, y=23 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT - 40, height=DATA_FRAME_HEIGHT // COLUMNS)
-compareGradationBtn.place(x=20, y=24 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT - 40, height=DATA_FRAME_HEIGHT // COLUMNS)
-clearCanvasBtn.place(x=20, y=25 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT - 40, height=DATA_FRAME_HEIGHT // COLUMNS)
-infoBtn.place(x=20, y=26 * DATA_FRAME_HEIGHT // COLUMNS, width=DATA_FRAME_WIGHT - 40, height=DATA_FRAME_HEIGHT // COLUMNS)
+lineLengthLabel.pack(fill='both', expand=True, side='top')
+lengthEntry.pack(fill='both', expand=True, side='top')
+compareTimenBtn.pack(fill='both', expand=True, side='top')
+compareGradationBtn.pack(fill='both', expand=True, side='top')
+clearCanvasBtn.pack(fill='both', expand=True, side='top')
+infoBtn.pack(fill='both', expand=True, side='top')
 
 #---------------------------------------------------------------------------------------------------------------
 angleEntry.insert(0, str(15))
