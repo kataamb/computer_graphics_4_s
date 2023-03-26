@@ -17,8 +17,27 @@ root.geometry(str(WINDOW_WIDTH) + "x" + str(WINDOW_HEIGHT))
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # CANVAS FILED FOR DRAWING lines and spectres by algorithms
-canvasFiled = tk.Canvas(root, bg=CANVAS_COLOUR)
-canvasFiled.pack(fill='both', expand=True, side='right')
+canvasFrame = tk.Frame(root)
+canvasFrame.pack(fill='both', expand=True, side='right')
+
+canvasFiled = tk.Canvas(canvasFrame, bg=CANVAS_COLOUR, scrollregion=(-1000,-1000,1000,1000))
+#canvasFiled.pack(fill='both', expand=True, side='right')
+
+
+# config Canvas to be scrollable
+
+hbar=tk.Scrollbar(canvasFrame, orient='horizontal')
+hbar.pack(side='top',fill='x')
+hbar.config(command=canvasFiled.xview)
+
+vbar=tk.Scrollbar(canvasFrame, orient='vertical')
+vbar.pack(side='right',fill='y')
+vbar.config(command=canvasFiled.yview)
+
+canvasFiled.config(xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+
+canvasFiled.pack(side='left',expand=True,fill='both')
+
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -31,13 +50,13 @@ def clearScreen():
 
 def drawAxes():
     color = 'gray'
-    canvasFiled.create_line(0, 3, CANVAS_WIDTH, 3, width=1, fill='light gray', arrow=tk.LAST)
-    canvasFiled.create_line(3, 0, 3, CANVAS_HEIGHT, width=1, fill='light gray', arrow=tk.LAST)
-    for i in range(50, int(CANVAS_WIDTH), 50):
-        canvasFiled.create_text(i, 15, text=str(abs(i)), fill=color)
+    canvasFiled.create_line(CANVAS_XB + 3, 0, CANVAS_XE + 3 , 0, width=2, fill='light gray', arrow=tk.LAST)
+    canvasFiled.create_line(0, CANVAS_YB + 3, 0, CANVAS_YE + 3, width=2, fill='light gray', arrow=tk.LAST)
+    for i in range(CANVAS_XB + 50, CANVAS_XE, 50):
+        canvasFiled.create_text(i, 15, text=str(i), fill=color)
         canvasFiled.create_line(i, 0, i, 5, fill=color)
 
-    for i in range(50, int(CANVAS_HEIGHT), 50):
+    for i in range(CANVAS_YB + 50, CANVAS_YE, 50):
         canvasFiled.create_text(20, i, text=str(abs(i)), fill=color)
         canvasFiled.create_line(0, i, 5, i, fill=color)
 
@@ -63,6 +82,9 @@ def drawLine():
         except all:
             messagebox.showwarning('Ошибка ввода',
                                    'Координаты заданы неверно!')
+
+        # тут можно прописать, чтобы обновить координаты
+
         if algorithm == 0:
             drawLineBy_algorithm(canvasFiled, DDA(xStart, yStart, xEnd, yEnd, colour=LINE_COLOUR))
         elif algorithm == 1:
@@ -474,11 +496,11 @@ infoBtn.pack(fill='both', expand=True, side='top')
 angleEntry.insert(0, str(15))
 lengthEntry.insert(0, str(100))
 
-xsEntry.insert(0, str(545))
-ysEntry.insert(0, str(350))
+xsEntry.insert(0, str(0))
+ysEntry.insert(0, str(0))
 
-xeEntry.insert(0, str(695))
-yeEntry.insert(0, str(500))
+xeEntry.insert(0, str(100))
+yeEntry.insert(0, str(100))
 
 drawAxes()
 
