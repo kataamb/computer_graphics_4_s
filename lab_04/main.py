@@ -2,6 +2,7 @@
 import tkinter as tk
 import interface as inter
 import tkinter.messagebox as box
+import tkinter.colorchooser as color_chooser
 
 WIDTH = 1000
 HEIGHT = 800
@@ -32,9 +33,17 @@ def f1():
 def f2():
     print('here change line color')
 
-def set_color(color_frame, canva_frame):
+
+def set_color_screen(color_frame, canva_frame):
     canva = canva_frame.get_canva()
-    canva.config(bg = 'red')
+    color_code = color_chooser.askcolor(title="Choose colour background canvas")
+    canva.config(bg = color_code[-1])
+
+def set_color_line(color_frame, canva_frame):
+    color_code = color_chooser.askcolor(title="Choose colour background canvas")
+    canva_frame.line_color = color_code[-1]
+    color_frame.cur_line_color_label.config(bg = color_code[-1])
+
 
 
 if __name__ == '__main__':
@@ -47,8 +56,10 @@ if __name__ == '__main__':
     output_part = inter.CanvasFrame(main_window)
     actions_part = inter.ActionsFrame(main_window)
 
-    actions_part.color_frame.chng_screen.config(command = lambda: set_color(actions_part.color_frame, output_part))
+    actions_part.color_frame.chng_screen.config(command = lambda: set_color_screen(actions_part.color_frame, output_part))
+    actions_part.color_frame.chng_line.config(command=lambda: set_color_line(actions_part.color_frame, output_part))
 
+    actions_part.btn_clear.config(command = lambda: output_part.redraw_canva())
 
     #actions_part.color_frame.set_functions([f1, f2])
 

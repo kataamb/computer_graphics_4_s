@@ -26,6 +26,7 @@ class CanvasFrame(MainFrame):
         self.color = color
         super().__init__(root, expand, color)
         self.canva = tk.Canvas(self, scrollregion=(-1000,-1000,1000,1000))
+        self.line_color = 'black'
 
         # config Canvas to be scrollable
 
@@ -151,15 +152,14 @@ class ColorFrame(OptionFrame):
         self.cur_line_color_label.pack(side = 'left', padx=10, pady=5)
 
 
-
-
-
+    '''
     def set_functions(self, functions_array):
         buttons = [self.chng_screen, self.chng_line]
         butns_and_func = [(x,y) for x,y in zip(buttons, functions_array)]
 
         for btn in butns_and_func:
             btn[0].config(command = btn[1])
+    '''
 
 
 class EllipsFrame(OptionFrame):
@@ -168,10 +168,42 @@ class EllipsFrame(OptionFrame):
         self.color = color
         self.text_color = text_color
 
+        self.center_frame = tk.Frame(self)
+        self.circle_frame = tk.Frame(self)
+        self.ellipse_frame = tk.Frame(self)
+
+
+        self.center_x = tk.Entry(self.center_frame)
+        self.center_y = tk.Entry(self.center_frame)
+
         self.ellips_interface()
 
     def ellips_interface(self):
-        pass
+        self.pack_interface()
+
+        label_center = tk.Label(self.center_frame, text = 'Center coordinates:')
+        label_center.pack(side= 'top', padx = 10, pady = 5, fill = "x")
+
+        self.center_x.pack(side = 'left', padx=10, pady=5)
+        self.center_y.pack(side='left', padx=10, pady=5)
+
+        label_cirlces = tk.Label(self.circle_frame, text='Draw circle:')
+        label_cirlces.pack(side='left', padx=10, pady=5, fill="x")
+
+        label_ellipses = tk.Label(self.ellipse_frame, text='Draw ellipse:')
+        label_ellipses.pack(side='left', padx=10, pady=5, fill="x")
+
+    def pack_interface(self):
+        self.center_frame.config(bg = 'red')
+        self.center_frame.pack(fill = 'both', expand=True, side='top')
+
+        self.circle_frame.config(bg= 'green')
+        self.circle_frame.pack( fill = 'both', expand=True, side='left')
+
+        self.ellipse_frame.config(bg= 'blue')
+        self.ellipse_frame.pack(fill = 'both', expand= True, side='left')
+
+
 
 
 class SpectrumFrame(OptionFrame):
@@ -207,12 +239,10 @@ class ActionsFrame(MainFrame):
         self.algos_frame = AlgorithmFrame(self, 'Алгоритмы построения')
         self.color_frame = ColorFrame(self, 'Цвета')
         self.ellips_frame = EllipsFrame(self, 'Задание окружности/эллипса')
-        self.spectrum_frame_circle = SpectrumFrame(self, 'Задание спектра окружностей')
-        self.spectrum_frame_ellipse = SpectrumFrame(self, 'Задание спектра эллипсов')
+        self.spectrum_frame = SpectrumFrame(self, 'Задание спектра окружностей/эллипсов')
         self.analyzis_frame = AnalyzisFrame(self, 'Сравнение времени алгоритмов')
 
-        self.btn_clear = tk.Button(self, text='Очистить', bg='darkslategray', fg='white', font=('Arial', 20),
-                                   command = self.clear_drawing)
+        self.btn_clear = tk.Button(self, text='Очистить', bg='darkslategray', fg='white', font=('Arial', 20))
         self.btn_info = tk.Button(self, text='Справка', bg = 'darkslategray', fg = 'white', font = ('Arial', 20),
                                   command = self.print_info)
 
@@ -224,8 +254,7 @@ class ActionsFrame(MainFrame):
         self.algos_frame.pack()
         self.color_frame.pack()
         self.ellips_frame.pack()
-        self.spectrum_frame_circle.pack()
-        self.spectrum_frame_ellipse.pack()
+        self.spectrum_frame.pack()
         self.analyzis_frame.pack()
 
         self.btn_clear.pack(fill='both', expand=False, side='top')
