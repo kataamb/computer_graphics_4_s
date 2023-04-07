@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as box
 
+Font = ('Arial', 12)
+FontHeader = ('Arial', 12)
 
 
 class MainFrame(tk.Frame):
@@ -88,9 +90,9 @@ class OptionFrame(tk.Frame):
         self.option_configurations()
 
     def option_configurations(self):
-        label_name = tk.Label(self, text = self.name, bg = self.color,
-                              fg = self.name_color, font = ('Arial', 20))
-        label_name.pack()
+        label_name = tk.Label(self, text = self.name, bg = 'lightslategray',
+                              fg = self.name_color, font = FontHeader)
+        label_name.pack(expand = True)
         self.pack(fill='both', expand=True, side='top')
         if self.color:
             self.config(bg=self.color)
@@ -103,23 +105,39 @@ class AlgorithmFrame(OptionFrame):
         self.color = color
         self.text_color = text_color
 
-        self.ALGOS = [('ЦДА', '1'), ('Брезенхэм f', '2'), ('Брезенхэм i', '3'),
-                      ('Брезенхэм устр', '4'), ('By', '5'), ('Библиотечный', '6')]
+        self.ALGOS = [('Каноническое уравнение', '1'), ('Параметрическое уравнение', '2'), ('Брезенхэма', '3'),
+                      ('Средней точки', '4'), ('Библиотечный', '5')]
+
+        self.alg_frame1 = tk.Frame(self)
+        self.alg_frame1.pack(side = 'left', expand = True)
+        self.alg_frame2 = tk.Frame(self)
+        self.alg_frame2.pack(side='left', expand=True)
+
         self.algorithm = tk.StringVar() # какой алгоритм выбран
-        self.algorithm.set("6")
-        self.algorithms = [self.create_radio(c) for c in self.ALGOS]
+        self.algorithm.set("5")
+        self.algorithms = self.create_algorithms()#[self.create_radio(c) for c in self.ALGOS]
 
         self.algorithm_interface()
 
-    def create_radio(self, option):
+    def create_radio(self, option, frame):
         text, value = option
-        return tk.Radiobutton(self, bg = self.color, selectcolor = self.color,
+        return tk.Radiobutton(frame, bg = self.color, selectcolor = self.color,
                               text=text, value=value, variable=self.algorithm)
 
+    def create_algorithms(self):
+        algos = []
+        for i in range( len(self.ALGOS) // 2):
+            algos.append( self.create_radio(self.ALGOS[i], self.alg_frame1) )
+
+        for i in range(len(self.ALGOS) // 2, len(self.ALGOS)):
+            algos.append( self.create_radio(self.ALGOS[i], self.alg_frame2) )
+        return algos
 
     def algorithm_interface(self):
         for button in self.algorithms:
             button.pack(anchor=tk.W, padx=10, pady=5)
+            button.config(font = Font)
+
 
     #--------
     #methods of class
@@ -136,20 +154,23 @@ class ColorFrame(OptionFrame):
         self.text_color = text_color
 
         self.chng_screen = tk.Button(self, text = 'Change screen', bg='lightslategray',
-                                     font=("Consolas", 16))
-        self.chng_line = tk.Button(self, text = 'Change line', bg='lightslategray',
-                                   font=("Consolas", 16))
-        self.line_label = tk.Label(self, bg=self.color, text="Текущий цвет линии:",
-                                   fg='white',   font=("Consolas", 16))
-        self.cur_line_color_label = tk.Label(self, bg="black")
+                                     font=Font)
+
+        self.color_line_frame = tk.Frame(self)
+        self.chng_line = tk.Button(self.color_line_frame, text = 'Изменить цвет линии', bg='lightslategray',
+                                   font=Font)
+        self.line_label = tk.Label(self.color_line_frame, bg=self.color, text="Текущий цвет линии:",
+                                   fg='white',   font=Font)
+        self.cur_line_color_label = tk.Label(self.color_line_frame, bg="black")
 
         self.color_interface()
 
     def color_interface(self):
-        self.chng_screen.pack(anchor = tk.W, padx = 10, pady = 5)
-        self.chng_line.pack(anchor=tk.W, padx=10, pady=5)
+        self.chng_screen.pack(side = 'left', padx = 10, pady = 5)
+        self.color_line_frame.pack(side = 'right', padx = 10, pady = 5, expand = True)
+        self.chng_line.pack(side = 'top', padx=10, pady=5)
         self.line_label.pack(side = 'left', padx=10, pady=5)
-        self.cur_line_color_label.pack(side = 'left', padx=10, pady=5)
+        self.cur_line_color_label.pack(side = 'left', padx=10, pady=5, fill = 'x', expand = 'true')
 
 
     '''
@@ -172,37 +193,92 @@ class EllipsFrame(OptionFrame):
         self.circle_frame = tk.Frame(self)
         self.ellipse_frame = tk.Frame(self)
 
-
         self.center_x = tk.Entry(self.center_frame)
         self.center_y = tk.Entry(self.center_frame)
 
-        self.ellips_interface()
+        self.radius_frame = tk.Frame(self.circle_frame)
+        self.radius = tk.Entry(self.radius_frame)
 
-    def ellips_interface(self):
+        self.a_frame = tk.Frame(self.ellipse_frame)
+        self.b_frame = tk.Frame(self.ellipse_frame)
+        self.a_coeff = tk.Entry(self.a_frame)
+        self.b_coeff = tk.Entry(self.b_frame)
+
+        self.btn_cirlces = tk.Button(self.circle_frame, text='Draw circle:')
+        self.btn_ellipses = tk.Button(self.ellipse_frame, text='Draw ellipse:')
+
+        self.all_interface()
+
+    def all_interface(self):
         self.pack_interface()
+        self.center_interface()
 
-        label_center = tk.Label(self.center_frame, text = 'Center coordinates:')
-        label_center.pack(side= 'top', padx = 10, pady = 5, fill = "x")
+        self.circle_input_interface()
+        self.ellipse_input_interface()
 
-        self.center_x.pack(side = 'left', padx=10, pady=5)
-        self.center_y.pack(side='left', padx=10, pady=5)
 
-        label_cirlces = tk.Label(self.circle_frame, text='Draw circle:')
-        label_cirlces.pack(side='left', padx=10, pady=5, fill="x")
-
-        label_ellipses = tk.Label(self.ellipse_frame, text='Draw ellipse:')
-        label_ellipses.pack(side='left', padx=10, pady=5, fill="x")
 
     def pack_interface(self):
-        self.center_frame.config(bg = 'red')
-        self.center_frame.pack(fill = 'both', expand=True, side='top')
+        self.center_frame.config(bg = self.color, relief="groove", borderwidth=2)
+        self.center_frame.pack(fill = 'both', expand=False, side='top')
 
-        self.circle_frame.config(bg= 'green')
-        self.circle_frame.pack( fill = 'both', expand=True, side='left')
+        self.circle_frame.config(bg= self.color, relief="sunken", borderwidth=2)
+        self.circle_frame.pack( fill = 'both', expand=False, side='left')
 
-        self.ellipse_frame.config(bg= 'blue')
-        self.ellipse_frame.pack(fill = 'both', expand= True, side='left')
+        self.ellipse_frame.config(bg= self.color, relief="groove", borderwidth=2)
+        self.ellipse_frame.pack(fill = 'both', expand= False, side='left')
 
+        self.radius_frame.config(bg= self.color)
+        self.radius_frame.pack(fill='both', expand=False, side='top')
+
+        self.a_frame.config(bg=self.color)
+        self.a_frame.pack(fill='both', expand=False, side='top')
+        self.b_frame.config(bg=self.color)
+        self.b_frame.pack(fill='both', expand=False, side='top')
+
+
+
+    def center_interface(self):
+        label_center = tk.Label(self.center_frame, text='Координаты центра:')
+        label_center.pack(side='top', padx=10, pady=5, fill="x")
+
+        label_x = tk.Label(self.center_frame, text='X:')
+        label_x.pack(side='left', padx=10, pady=5, fill="x")
+        self.center_x.pack(side='left', padx=10, pady=5)
+
+        self.center_y.pack(side='right', padx=10, pady=5)
+        label_y = tk.Label(self.center_frame, text='Y:')
+        label_y.pack(side='right', padx=10, pady=5, fill="x")
+
+        for i in [label_center, label_x, label_y]:
+            i.config(bg = self.color, fg = 'white', font = Font)
+
+
+    def circle_input_interface(self):
+        self.btn_cirlces.pack(side='bottom', padx=10, pady=5, fill="x")
+        radius_label = tk.Label(self.radius_frame, text='Радиус:')
+        radius_label.pack(side='left', padx=10, pady=5, fill="x")
+        self.radius.pack(side='left', padx=10, pady=5)
+
+        for i in [self.btn_cirlces, radius_label]:
+            i.config(bg = self.color, fg = 'white', font = Font)
+
+
+    def ellipse_input_interface(self):
+
+        acoeff_label = tk.Label(self.a_frame, text='a:')
+        acoeff_label.pack(side='left', padx=10, pady=5, fill="x")
+        self.a_coeff.pack(side='left', padx=10, pady=5)
+
+
+        bcoeff_label = tk.Label(self.b_frame, text='b:')
+        bcoeff_label.pack(side='left', padx=10, pady=5, fill="x")
+        self.b_coeff.pack(side='left', padx=10, pady=5)
+
+        self.btn_ellipses.pack(side='top', padx=10, pady=5, fill="x")
+
+        for i in [self.btn_ellipses, acoeff_label, bcoeff_label]:
+            i.config(bg = self.color, fg = 'white', font = Font)
 
 
 
@@ -212,10 +288,105 @@ class SpectrumFrame(OptionFrame):
         self.color = color
         self.text_color = text_color
 
+        self.common_frame = tk.Frame(self)
+        self.difference_frame = tk.Frame(self)
+        self.btn_frame = tk.Frame(self)
+
+        self.step_frame = tk.Frame(self.common_frame)
+        self.num_frame = tk.Frame(self.common_frame)
+
+
+        self.btn_cirlces = tk.Button(self.btn_frame, text='Спектр окружностей')
+        self.btn_ellipses = tk.Button(self.btn_frame, text='Спектр эллипсов')
+
+        self.circle_frame = tk.Frame(self.difference_frame)
+        self.ellipse_frame = tk.Frame(self.difference_frame)
+
+        self.raduis = tk.Entry(self.circle_frame)
+        self.a_frame = tk.Frame(self.ellipse_frame)
+        self.b_frame = tk.Frame(self.ellipse_frame)
+
+
+        self.a_coeff = tk.Entry(self.a_frame)
+        self.b_coeff = tk.Entry(self.b_frame)
+        self.figure_number = tk.Entry(self.num_frame)
+        self.step = tk.Entry(self.step_frame)
+
         self.spectrum_interface()
 
     def spectrum_interface(self):
-        pass
+        self.pack_frames_interface()
+        self.common_interface()
+
+        self.circle_input_interface()
+        self.ellipse_input_interface()
+
+
+    def pack_frames_interface(self):
+        self.common_frame.config(bg=self.color, relief="sunken", borderwidth=2)
+        self.common_frame.pack(fill='both', expand=False, side='top')
+
+        self.difference_frame.config(bg=self.color, relief="sunken", borderwidth=2)
+        self.difference_frame.pack(fill='both', expand=False, side='top')
+
+        self.btn_frame.config(bg=self.color, relief="sunken", borderwidth=2)
+        self.btn_frame.pack(fill='both', expand=False, side='top')
+
+        self.step_frame.config(bg=self.color)
+        self.step_frame.pack(fill='both', expand=False, side='left')
+        self.num_frame.config(bg=self.color)
+        self.num_frame.pack(fill='both', expand=False, side='left')
+
+        self.circle_frame.config(bg=self.color)
+        self.circle_frame.pack(fill='both', expand=False, side='left')
+
+        self.ellipse_frame.config(bg=self.color)
+        self.ellipse_frame.pack(fill='both', expand=False, side='right')
+
+        self.btn_cirlces.pack(fill='both', expand=True, side='left')
+        self.btn_ellipses.pack(fill='both', expand=True, side='left')
+
+        self.a_frame.pack(fill='both', expand=False, side='top')
+        self.b_frame.pack(fill='both', expand=False, side='top')
+
+
+
+    def common_interface(self):
+        label_step = tk.Label(self.step_frame, text='Шаг:')
+        label_step.pack(side='left', padx=10, pady=5, fill="x")
+        self.step.pack(side='left', padx=10, pady=5)
+
+        label_num = tk.Label(self.num_frame, text='Num:')
+        label_num.pack(side='left', padx=10, pady=5, fill="x")
+        self.figure_number.pack(side='left', padx=10, pady=5)
+
+        for i in [label_step, label_num]:
+            i.config(bg = self.color, fg = 'white', font = Font)
+
+
+    def circle_input_interface(self):
+        radius_label = tk.Label(self.circle_frame, text='Радиус:')
+        radius_label.pack(side='left', padx=10, pady=5, fill="x")
+        self.raduis.pack(side='left', padx=10, pady=5)
+
+        for i in [radius_label]:
+            i.config(bg = self.color, fg = 'white', font = Font)
+
+    def ellipse_input_interface(self):
+
+        acoeff_label = tk.Label(self.a_frame, text='a:')
+        acoeff_label.pack(side='left', padx=10, pady=5, fill="x")
+        self.a_coeff.pack(side='left', padx=10, pady=5)
+
+
+        bcoeff_label = tk.Label(self.b_frame, text='b:')
+        bcoeff_label.pack(side='left', padx=10, pady=5, fill="x")
+        self.b_coeff.pack(side='left', padx=10, pady=5)
+
+        for i in [acoeff_label, bcoeff_label]:
+            i.config(bg = self.color, fg = 'white', font = Font)
+
+
 
 
 class AnalyzisFrame(OptionFrame):
@@ -236,10 +407,11 @@ class ActionsFrame(MainFrame):
         self.color = color
         super().__init__(root)
 
-        self.algos_frame = AlgorithmFrame(self, 'Алгоритмы построения')
+
         self.color_frame = ColorFrame(self, 'Цвета')
         self.ellips_frame = EllipsFrame(self, 'Задание окружности/эллипса')
         self.spectrum_frame = SpectrumFrame(self, 'Задание спектра окружностей/эллипсов')
+        self.algos_frame = AlgorithmFrame(self, 'Алгоритмы построения')
         self.analyzis_frame = AnalyzisFrame(self, 'Сравнение времени алгоритмов')
 
         self.btn_clear = tk.Button(self, text='Очистить', bg='darkslategray', fg='white', font=('Arial', 20))
@@ -251,10 +423,11 @@ class ActionsFrame(MainFrame):
 
 
     def actions_interface(self):
-        self.algos_frame.pack()
+
         self.color_frame.pack()
         self.ellips_frame.pack()
         self.spectrum_frame.pack()
+        #self.algos_frame.pack()
         self.analyzis_frame.pack()
 
         self.btn_clear.pack(fill='both', expand=False, side='top')
