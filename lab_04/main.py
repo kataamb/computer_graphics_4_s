@@ -11,10 +11,6 @@ HEIGHT = 800
 main function to process all data, got on actions frame
 and output to canvas frame (draw) (output_part)
 '''
-def set_screen_color():
-    print('Youre in f1')
-def set_line_color():
-    pass
 
 def draw_circle():
     pass
@@ -26,12 +22,6 @@ def draw_circle_spectrum():
 def draw_ellipse_spectrum():
     pass
 
-
-def f1():
-    print('here change screen color')
-
-def f2():
-    print('here change line color')
 
 
 def set_color_screen(color_frame, canva_frame):
@@ -61,14 +51,6 @@ if __name__ == '__main__':
 
     actions_part.btn_clear.config(command = lambda: output_part.redraw_canva())
 
-    #actions_part.color_frame.set_functions([f1, f2])
-
-
-
-
-
-
-    #process(actions_part, output_part)
 
 
 
