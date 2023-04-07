@@ -33,6 +33,7 @@ def set_color_line(color_frame, canva_frame):
     color_code = color_chooser.askcolor(title="Choose colour background canvas")
     canva_frame.line_color = color_code[-1]
     color_frame.cur_line_color_label.config(bg = color_code[-1])
+    color_frame.set_line_color(color_code[-1])
 
 
 

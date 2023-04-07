@@ -1,6 +1,7 @@
+import math
 import tkinter as tk
-from tkinter import ttk
-import tkinter.messagebox as box
+from tkinter import ttk, messagebox
+
 
 Font = ('Arial', 12)
 FontHeader = ('Arial', 12)
@@ -144,9 +145,6 @@ class AlgorithmFrame(OptionFrame):
             button.pack(anchor=tk.W, padx=10, pady=5)
             button.config(font = Font)
 
-
-    #--------
-    #methods of class
     def get_algorithm(self):
         return self.algorithm
 
@@ -159,14 +157,16 @@ class ColorFrame(OptionFrame):
         self.color = color
         self.text_color = text_color
 
+        self.line_color = 'black'
+
         self.chng_screen = tk.Button(self, text = 'Изменить цвет экрана', bg=self.color,
-                                     font=Font, fg='white')
+                                     font=Font, fg= text_color)
 
         self.color_line_frame = tk.Frame(self, bg = self.color)
         self.chng_line = tk.Button(self.color_line_frame, text = 'Изменить цвет линии', bg=self.color,
-                                   font=Font, fg='white')
+                                   font=Font, fg= text_color)
         self.line_label = tk.Label(self.color_line_frame, bg=self.color, text="Текущий цвет линии:",
-                                   fg='white',   font=Font)
+                                   fg=text_color,   font=Font)
         self.cur_line_color_label = tk.Label(self.color_line_frame, bg="black")
 
         self.color_interface()
@@ -177,6 +177,13 @@ class ColorFrame(OptionFrame):
         self.chng_line.pack(side = 'top', padx=10, pady=5)
         self.line_label.pack(side = 'left', padx=10, pady=5)
         self.cur_line_color_label.pack(side = 'left', padx=10, pady=5, fill = 'x', expand = 'true')
+
+    def set_line_color(self, color):
+        self.line_color = color
+
+
+    def get_line_color(self):
+        return self.line_color
 
 
     '''
@@ -195,20 +202,26 @@ class EllipsFrame(OptionFrame):
         self.color = color
         self.text_color = text_color
 
+        self.x = tk.StringVar()
+        self.y = tk.StringVar()
+        self.radius = tk.StringVar()
+        self.a = tk.StringVar()
+        self.b = tk.StringVar()
+
         self.center_frame = tk.Frame(self)
         self.circle_frame = tk.Frame(self)
         self.ellipse_frame = tk.Frame(self)
 
-        self.center_x = tk.Entry(self.center_frame)
-        self.center_y = tk.Entry(self.center_frame)
+        self.center_x = tk.Entry(self.center_frame, textvariable= self.x)
+        self.center_y = tk.Entry(self.center_frame, textvariable= self.y)
 
         self.radius_frame = tk.Frame(self.circle_frame)
-        self.radius = tk.Entry(self.radius_frame)
+        self.radius_entry = tk.Entry(self.radius_frame, textvariable= self.radius)
 
         self.a_frame = tk.Frame(self.ellipse_frame)
         self.b_frame = tk.Frame(self.ellipse_frame)
-        self.a_coeff = tk.Entry(self.a_frame)
-        self.b_coeff = tk.Entry(self.b_frame)
+        self.a_coeff = tk.Entry(self.a_frame, textvariable= self.a)
+        self.b_coeff = tk.Entry(self.b_frame, textvariable= self.b)
 
         self.btn_cirlces = tk.Button(self.circle_frame, text='Draw circle:')
         self.btn_ellipses = tk.Button(self.ellipse_frame, text='Draw ellipse:')
@@ -257,17 +270,17 @@ class EllipsFrame(OptionFrame):
         label_y.pack(side='right', padx=10, pady=5, fill="x")
 
         for i in [label_center, label_x, label_y]:
-            i.config(bg = self.color, fg = 'white', font = Font)
+            i.config(bg = self.color, fg = self.text_color, font = Font)
 
 
     def circle_input_interface(self):
         self.btn_cirlces.pack(side='bottom', padx=10, pady=5, fill="x")
         radius_label = tk.Label(self.radius_frame, text='Радиус:')
         radius_label.pack(side='left', padx=10, pady=5, fill="x")
-        self.radius.pack(side='left', padx=10, pady=5)
+        self.radius_entry.pack(side='left', padx=10, pady=5)
 
         for i in [self.btn_cirlces, radius_label]:
-            i.config(bg = self.color, fg = 'white', font = Font)
+            i.config(bg = self.color, fg = self.text_color, font = Font)
 
 
     def ellipse_input_interface(self):
@@ -284,8 +297,46 @@ class EllipsFrame(OptionFrame):
         self.btn_ellipses.pack(side='top', padx=10, pady=5, fill="x")
 
         for i in [self.btn_ellipses, acoeff_label, bcoeff_label]:
-            i.config(bg = self.color, fg = 'white', font = Font)
+            i.config(bg = self.color, fg = self.text_color, font = Font)
 
+    #
+    def get_center(self):
+        pass
+
+    def get_radius(self):
+        radius = self.start_radius.get()
+
+        try:
+            radius = int(radius)
+        except Exception:
+            messagebox.showwarning("Ошибка",
+                                   "Неверно задан радиус окружности!\n"
+                                   "Ожидался ввод целых чисел.")
+            return math.nan
+        if (radius <= 0):
+            messagebox.showwarning("Ошибка",
+                                   "Неверно задан радиус окружности!\n"
+                                   "Радиус не может быть меньше 1.")
+            return math.nan
+        return radius
+
+    def get_ellipse_parameters(self):
+        a = self.start_a_coeff.get()
+        b = self.start_b_coeff.get()
+        try:
+            a = int(a)
+            b = int(b)
+            if a <= 0 or b <= 0:
+                messagebox.showwarning("Ошибка",
+                                       "Неверно заданы радиусы A и B эллипса!\nA и B не могут быть меньше 1.\n")
+                return math.nan
+        except Exception:
+            messagebox.showwarning("Ошибка",
+                                   "Неверно заданы радиусы A и B эллипса!\n"
+                                   "Ожидался ввод целых чисел.")
+            return math.nan
+
+        return (a, b)
 
 
 class SpectrumFrame(OptionFrame):
@@ -293,6 +344,12 @@ class SpectrumFrame(OptionFrame):
         super().__init__(parent_frame, name, color, text_color)
         self.color = color
         self.text_color = text_color
+
+        self.step = tk.StringVar()
+        self.fig_num = tk.StringVar()
+        self.start_radius =  tk.StringVar()
+        self.start_a_coeff = tk.StringVar()
+        self.start_b_coeff = tk.StringVar()
 
         self.common_frame = tk.Frame(self)
         self.difference_frame = tk.Frame(self)
@@ -314,8 +371,8 @@ class SpectrumFrame(OptionFrame):
         self.a_frame = tk.Frame(self.ellipse_frame)
         self.b_frame = tk.Frame(self.ellipse_frame)
 
-        self.a_coeff = tk.Entry(self.a_frame)
-        self.b_coeff = tk.Entry(self.b_frame)
+        self.a_coeff_entry = tk.Entry(self.a_frame, textvariable= self.start_a_coeff)
+        self.b_coeff_entry = tk.Entry(self.b_frame, textvariable= self.start_b_coeff)
         self.figure_number = tk.Entry(self.num_frame)
         self.step = tk.Entry(self.step_frame)
 
@@ -367,7 +424,7 @@ class SpectrumFrame(OptionFrame):
         self.figure_number.pack(side='left', padx=10, pady=5)
 
         for i in [label_step, label_num]:
-            i.config(bg = self.color, fg = 'white', font = Font)
+            i.config(bg = self.color, fg = self.text_color, font = Font)
 
 
     def circle_input_interface(self):
@@ -378,23 +435,95 @@ class SpectrumFrame(OptionFrame):
         self.btn_cirlces.pack(side='bottom', padx=10, pady=5, fill="y")
 
         for i in [radius_label, self.btn_cirlces]:
-            i.config(bg = self.color, fg = 'white', font = Font)
+            i.config(bg = self.color, fg = self.text_color, font = Font)
 
     def ellipse_input_interface(self):
 
         acoeff_label = tk.Label(self.a_frame, text='a:')
         acoeff_label.pack(side='left', padx=10, pady=5, fill="x")
-        self.a_coeff.pack(side='left', padx=10, pady=5)
+        self.a_coeff_entry.pack(side='left', padx=10, pady=5)
 
 
         bcoeff_label = tk.Label(self.b_frame, text='b:')
         bcoeff_label.pack(side='left', padx=10, pady=5, fill="x")
-        self.b_coeff.pack(side='left', padx=10, pady=5)
+        self.b_coeff_entry.pack(side='left', padx=10, pady=5)
 
         self.btn_ellipses.pack(fill='both', expand=True, side='top')
 
         for i in [acoeff_label, bcoeff_label, self.btn_ellipses]:
-            i.config(bg = self.color, fg = 'white', font = Font)
+            i.config(bg = self.color, fg = self.text_color, font = Font)
+
+
+    #
+    def get_start_radius(self):
+        radius = self.start_radius.get()
+
+        try:
+            radius = int(radius)
+        except Exception:
+            messagebox.showwarning("Ошибка",
+                                   "Неверно задан радиус окружности!\n"
+                                  "Ожидался ввод целых чисел.")
+            return math.nan
+        if (radius <= 0):
+            messagebox.showwarning("Ошибка",
+                                   "Неверно задан радиус окружности!\n"
+                                   "Радиус не может быть меньше 1.")
+            return math.nan
+        return radius
+
+    def get_start_ellipse_parameters(self):
+        a = self.start_a_coeff.get()
+        b = self.start_b_coeff.get()
+        try:
+            a = int(a)
+            b = int(b)
+            if a <= 0 or b <= 0:
+                messagebox.showwarning("Ошибка",
+                                       "Неверно заданы радиусы A и B эллипса!\nA и B не могут быть меньше 1.\n")
+                return math.nan
+        except Exception:
+            messagebox.showwarning("Ошибка",
+                                   "Неверно заданы радиусы A и B эллипса!\n"
+                                   "Ожидался ввод целых чисел.")
+            return math.nan
+
+        return(a, b)
+
+
+    def get_step(self):
+        step_ret = self.step.get()
+
+        try:
+            step_ret = int(step_ret)
+        except Exception:
+            messagebox.showwarning("Ошибка",
+                                   "Неверно задан шаг спектра!\n"
+                                   "Ожидался ввод целого числа.")
+            return math.nan
+        if (step_ret <= 0):
+            messagebox.showwarning("Ошибка",
+                                   "Неверно задан шаг спектра!\n"
+                                   "Шаг не может быть меньше 1.")
+            return math.nan
+        return step_ret
+
+    def get_number_figures(self):
+        num_fig = self.fig_num.get()
+
+        try:
+            num_fig = int(num_fig)
+        except Exception:
+            messagebox.showwarning("Ошибка",
+                                   "Неверно задано количество фигур!\n"
+                                   "Ожидался ввод целого числа.")
+            return math.nan
+        if (num_fig <= 0):
+            messagebox.showwarning("Ошибка",
+                                   "Неверно задано количество фигур!\n"
+                                   "Их количество не может быть меньше 1.")
+            return math.nan
+        return num_fig
 
 
 
@@ -411,9 +540,9 @@ class AnalyzisFrame(OptionFrame):
         self.analyzis_interface()
 
     def analyzis_interface(self):
-        self.btn_circle_time.config(bg = self.color, font = Font, fg = 'white')
+        self.btn_circle_time.config(bg = self.color, font = Font, fg = self.text_color)
         self.btn_circle_time.pack(side = 'left', expand = True, fill = 'x')
-        self.btn_ellips_time.config(bg=self.color, font=Font, fg='white')
+        self.btn_ellips_time.config(bg=self.color, font=Font, fg=self.text_color)
         self.btn_ellips_time.pack(side = 'left', expand = True, fill = 'x')
 
 ##################################################################################################
