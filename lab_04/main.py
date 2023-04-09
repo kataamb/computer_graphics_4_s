@@ -12,15 +12,15 @@ main function to process all data, got on actions frame
 and output to canvas frame (draw) (output_part)
 '''
 
-def draw_circle():
-    pass
-def draw_ellipse():
-    pass
+def draw_circle(actions, output):
+    print('draw circle')
+def draw_ellipse(actions, output):
+    print('draw ellipse')
 
-def draw_circle_spectrum():
-    pass
-def draw_ellipse_spectrum():
-    pass
+def draw_circle_spectrum(actions, output):
+    print('draw circle spectrum')
+def draw_ellipse_spectrum(actions, output):
+    print('draw el spectrum')
 
 
 
@@ -47,10 +47,19 @@ if __name__ == '__main__':
     output_part = inter.CanvasFrame(main_window)
     actions_part = inter.ActionsFrame(main_window)
 
+    # config buttons with actions(functions)
     actions_part.color_frame.chng_screen.config(command = lambda: set_color_screen(actions_part.color_frame, output_part))
     actions_part.color_frame.chng_line.config(command=lambda: set_color_line(actions_part.color_frame, output_part))
 
+    actions_part.ellips_frame.btn_ellipses.config(command=lambda: draw_ellipse(actions_part, output_part))
+    actions_part.ellips_frame.btn_circles.config(command=lambda: draw_circle(actions_part, output_part))
+
+    actions_part.spectrum_frame.btn_ellipses.config(command=lambda: draw_ellipse_spectrum(actions_part, output_part))
+    actions_part.spectrum_frame.btn_circles.config(command=lambda: draw_circle_spectrum(actions_part, output_part))
+
     actions_part.btn_clear.config(command = lambda: output_part.redraw_canva())
+    actions_part.btn_info.config(command=lambda: actions_part.print_info())
+
 
 
 

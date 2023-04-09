@@ -34,8 +34,6 @@ class CanvasFrame(MainFrame):
         # config Canvas to be scrollable
         self.make_canva_scrollable()
 
-        #
-
         self.canvas_interface()
 
 
@@ -223,8 +221,8 @@ class EllipsFrame(OptionFrame):
         self.a_coeff = tk.Entry(self.a_frame, textvariable= self.a)
         self.b_coeff = tk.Entry(self.b_frame, textvariable= self.b)
 
-        self.btn_cirlces = tk.Button(self.circle_frame, text='Draw circle:')
-        self.btn_ellipses = tk.Button(self.ellipse_frame, text='Draw ellipse:')
+        self.btn_circles = tk.Button(self.circle_frame, text='Окружность')
+        self.btn_ellipses = tk.Button(self.ellipse_frame, text='Эллипс')
 
         self.all_interface()
 
@@ -274,12 +272,12 @@ class EllipsFrame(OptionFrame):
 
 
     def circle_input_interface(self):
-        self.btn_cirlces.pack(side='bottom', padx=10, pady=5, fill="x")
+        self.btn_circles.pack(side='bottom', padx=10, pady=5, fill="x")
         radius_label = tk.Label(self.radius_frame, text='Радиус:')
         radius_label.pack(side='left', padx=10, pady=5, fill="x")
         self.radius_entry.pack(side='left', padx=10, pady=5)
 
-        for i in [self.btn_cirlces, radius_label]:
+        for i in [self.btn_circles, radius_label]:
             i.config(bg = self.color, fg = self.text_color, font = Font)
 
 
@@ -301,7 +299,18 @@ class EllipsFrame(OptionFrame):
 
     #
     def get_center(self):
-        pass
+        x = self.x.get()
+        y = self.y.get()
+        try:
+            x = int(x)
+            y = int(y)
+        except Exception:
+            messagebox.showwarning("Ошибка",
+                                   "Неверно заданы координаты центра!\n"
+                                   "Ожидался ввод целых чисел.")
+            return math.nan
+
+        return (x, y)
 
     def get_radius(self):
         radius = self.start_radius.get()
@@ -361,7 +370,7 @@ class SpectrumFrame(OptionFrame):
         self.ellipse_frame = tk.Frame(self.difference_frame)
 
 
-        self.btn_cirlces = tk.Button(self.circle_frame, text='Спектр окружностей')
+        self.btn_circles = tk.Button(self.circle_frame, text='Спектр окружностей')
         self.btn_ellipses = tk.Button(self.ellipse_frame, text='Спектр эллипсов')
 
         self.radius_frame = tk.Frame(self.circle_frame)
@@ -419,7 +428,7 @@ class SpectrumFrame(OptionFrame):
         label_step.pack(side='left', padx=10, pady=5, fill="x")
         self.step.pack(side='left', padx=10, pady=5)
 
-        label_num = tk.Label(self.num_frame, text='Num:')
+        label_num = tk.Label(self.num_frame, text='Количество фигур:')
         label_num.pack(side='left', padx=10, pady=5, fill="x")
         self.figure_number.pack(side='left', padx=10, pady=5)
 
@@ -428,23 +437,23 @@ class SpectrumFrame(OptionFrame):
 
 
     def circle_input_interface(self):
-        radius_label = tk.Label(self.radius_frame, text='Радиус:')
+        radius_label = tk.Label(self.radius_frame, text='Начальный радиус:')
         radius_label.pack(side='left', padx=10, pady=5, fill="x")
         self.raduis.pack(side='left', padx=10, pady=5)
 
-        self.btn_cirlces.pack(side='bottom', padx=10, pady=5, fill="y")
+        self.btn_circles.pack(side='bottom', padx=10, pady=5, fill="y")
 
-        for i in [radius_label, self.btn_cirlces]:
+        for i in [radius_label, self.btn_circles]:
             i.config(bg = self.color, fg = self.text_color, font = Font)
 
     def ellipse_input_interface(self):
 
-        acoeff_label = tk.Label(self.a_frame, text='a:')
+        acoeff_label = tk.Label(self.a_frame, text='Начальный А:')
         acoeff_label.pack(side='left', padx=10, pady=5, fill="x")
         self.a_coeff_entry.pack(side='left', padx=10, pady=5)
 
 
-        bcoeff_label = tk.Label(self.b_frame, text='b:')
+        bcoeff_label = tk.Label(self.b_frame, text='Начальный B:')
         bcoeff_label.pack(side='left', padx=10, pady=5, fill="x")
         self.b_coeff_entry.pack(side='left', padx=10, pady=5)
 
@@ -560,8 +569,7 @@ class ActionsFrame(MainFrame):
         self.analyzis_frame = AnalyzisFrame(self, 'Сравнение времени алгоритмов')
 
         self.btn_clear = tk.Button(self, text='Очистить', bg='darkslategray', fg='white', font=('Arial', 20))
-        self.btn_info = tk.Button(self, text='Справка', bg = 'darkslategray', fg = 'white', font = ('Arial', 20),
-                                  command = self.print_info)
+        self.btn_info = tk.Button(self, text='Справка', bg = 'darkslategray', fg = 'white', font = ('Arial', 20))
 
         self.actions_interface()
 
@@ -579,7 +587,7 @@ class ActionsFrame(MainFrame):
         self.btn_info.pack(fill='both', expand=False, side='top')
 
     def print_info(self):
-        box.showinfo('Справка',
+        messagebox.showinfo('Справка',
                             'С помощью данной программы можно построить окружность или эллипс 5-ми способами:\n'
                             '1) используя Каноническое уравнение;\n'
                             '2) используя Параметрическое уравнение;\n'
