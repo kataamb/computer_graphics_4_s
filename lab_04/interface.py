@@ -144,7 +144,7 @@ class AlgorithmFrame(OptionFrame):
             button.config(font = Font)
 
     def get_algorithm(self):
-        return self.algorithm
+        return self.algorithm.get()
 
 
 class ColorFrame(OptionFrame):
@@ -240,10 +240,10 @@ class EllipsFrame(OptionFrame):
         self.center_frame.pack(fill = 'both', expand=False, side='top')
 
         self.circle_frame.config(bg= self.color, relief="groove", borderwidth=2)
-        self.circle_frame.pack( fill = 'both', expand=False, side='left')
+        self.circle_frame.pack( fill = 'both', expand=True, side='left')
 
         self.ellipse_frame.config(bg= self.color, relief="groove", borderwidth=2)
-        self.ellipse_frame.pack(fill = 'both', expand= False, side='left')
+        self.ellipse_frame.pack(fill = 'both', expand= True, side='left')
 
         self.radius_frame.config(bg= self.color)
         self.radius_frame.pack(fill='both', expand=False, side='top')
@@ -308,12 +308,12 @@ class EllipsFrame(OptionFrame):
             messagebox.showwarning("Ошибка",
                                    "Неверно заданы координаты центра!\n"
                                    "Ожидался ввод целых чисел.")
-            return math.nan
+            return 0
 
         return (x, y)
 
     def get_radius(self):
-        radius = self.start_radius.get()
+        radius = self.radius.get()
 
         try:
             radius = int(radius)
@@ -321,29 +321,29 @@ class EllipsFrame(OptionFrame):
             messagebox.showwarning("Ошибка",
                                    "Неверно задан радиус окружности!\n"
                                    "Ожидался ввод целых чисел.")
-            return math.nan
+            return 0
         if (radius <= 0):
             messagebox.showwarning("Ошибка",
                                    "Неверно задан радиус окружности!\n"
                                    "Радиус не может быть меньше 1.")
-            return math.nan
+            return 0
         return radius
 
     def get_ellipse_parameters(self):
-        a = self.start_a_coeff.get()
-        b = self.start_b_coeff.get()
+        a = self.a.get()
+        b = self.b.get()
         try:
             a = int(a)
             b = int(b)
             if a <= 0 or b <= 0:
                 messagebox.showwarning("Ошибка",
                                        "Неверно заданы радиусы A и B эллипса!\nA и B не могут быть меньше 1.\n")
-                return math.nan
+                return 0
         except Exception:
             messagebox.showwarning("Ошибка",
                                    "Неверно заданы радиусы A и B эллипса!\n"
                                    "Ожидался ввод целых чисел.")
-            return math.nan
+            return 0
 
         return (a, b)
 
@@ -354,7 +354,7 @@ class SpectrumFrame(OptionFrame):
         self.color = color
         self.text_color = text_color
 
-        self.step = tk.StringVar()
+        self.steps = tk.StringVar()
         self.fig_num = tk.StringVar()
         self.start_radius =  tk.StringVar()
         self.start_a_coeff = tk.StringVar()
@@ -376,14 +376,14 @@ class SpectrumFrame(OptionFrame):
         self.radius_frame = tk.Frame(self.circle_frame)
 
 
-        self.raduis = tk.Entry(self.radius_frame)
+        self.raduis = tk.Entry(self.radius_frame, textvariable= self.start_radius)
         self.a_frame = tk.Frame(self.ellipse_frame)
         self.b_frame = tk.Frame(self.ellipse_frame)
 
         self.a_coeff_entry = tk.Entry(self.a_frame, textvariable= self.start_a_coeff)
         self.b_coeff_entry = tk.Entry(self.b_frame, textvariable= self.start_b_coeff)
-        self.figure_number = tk.Entry(self.num_frame)
-        self.step = tk.Entry(self.step_frame)
+        self.figure_number = tk.Entry(self.num_frame, textvariable= self.fig_num)
+        self.step = tk.Entry(self.step_frame, textvariable= self.steps)
 
         self.spectrum_interface()
 
@@ -471,14 +471,14 @@ class SpectrumFrame(OptionFrame):
             radius = int(radius)
         except Exception:
             messagebox.showwarning("Ошибка",
-                                   "Неверно задан радиус окружности!\n"
+                                   "Неверно задан начальный радиус окружности!\n"
                                   "Ожидался ввод целых чисел.")
-            return math.nan
+            return 0
         if (radius <= 0):
             messagebox.showwarning("Ошибка",
                                    "Неверно задан радиус окружности!\n"
                                    "Радиус не может быть меньше 1.")
-            return math.nan
+            return 0
         return radius
 
     def get_start_ellipse_parameters(self):
@@ -490,18 +490,18 @@ class SpectrumFrame(OptionFrame):
             if a <= 0 or b <= 0:
                 messagebox.showwarning("Ошибка",
                                        "Неверно заданы радиусы A и B эллипса!\nA и B не могут быть меньше 1.\n")
-                return math.nan
+                return 0
         except Exception:
             messagebox.showwarning("Ошибка",
                                    "Неверно заданы радиусы A и B эллипса!\n"
                                    "Ожидался ввод целых чисел.")
-            return math.nan
+            return 0
 
         return(a, b)
 
 
     def get_step(self):
-        step_ret = self.step.get()
+        step_ret = self.steps.get()
 
         try:
             step_ret = int(step_ret)
@@ -509,12 +509,12 @@ class SpectrumFrame(OptionFrame):
             messagebox.showwarning("Ошибка",
                                    "Неверно задан шаг спектра!\n"
                                    "Ожидался ввод целого числа.")
-            return math.nan
+            return 0
         if (step_ret <= 0):
             messagebox.showwarning("Ошибка",
                                    "Неверно задан шаг спектра!\n"
                                    "Шаг не может быть меньше 1.")
-            return math.nan
+            return 0
         return step_ret
 
     def get_number_figures(self):
@@ -526,12 +526,12 @@ class SpectrumFrame(OptionFrame):
             messagebox.showwarning("Ошибка",
                                    "Неверно задано количество фигур!\n"
                                    "Ожидался ввод целого числа.")
-            return math.nan
+            return 0
         if (num_fig <= 0):
             messagebox.showwarning("Ошибка",
                                    "Неверно задано количество фигур!\n"
                                    "Их количество не может быть меньше 1.")
-            return math.nan
+            return 0
         return num_fig
 
 

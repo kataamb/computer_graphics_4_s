@@ -7,12 +7,6 @@ def standard_circle(canvas, xc, yc, r, colour, mode = True):
     canvas.create_oval(xc - r, yc - r, xc + r, yc + r, outline=colour)
 
 
-def spectrumBy_standart(canvas, xc, yc, ra, rb, step, count, colour):
-    for e in range(0, count):
-        standard_oval(canvas, xc, yc, ra, rb, colour)
-        ra += step
-        rb += step
-
 
 def spectrumCircleBy_algorith(canvas, alg, xc, yc, rs, step, count, colour):
     for e in range(0, count):
@@ -32,3 +26,49 @@ def circle_by_algotithm(canvas, alg, xc, yc, radius, colour):
 
 def ellipse_by_algotithm(canvas, alg, xc, yc, ra, rb, colour):
     alg(canvas, xc, yc, ra, rb, colour, True)
+
+
+#######################
+
+from bresenham import bresenham_circle_octant, bresenham_ellipse
+from canonic import canonical_сircle, canonical_ellipse
+from parametric import parameter_circle, parameter_ellipse
+from midpoint import midpoint_circle, midpoint_ellipse
+
+
+def add_ellipse(canvas, algorithm, xc, yc, ra, rb, color, drawMode=True):
+    try:
+        alg = algorithm.get()
+    except AttributeError:
+        alg = algorithm
+
+    if alg == 0:
+        canonical_ellipse(canvas, xc, yc, ra, rb, color, drawMode)
+    elif alg == 1:
+        parameter_ellipse(canvas, xc, yc, ra, rb, color, drawMode)
+    elif alg == 2:
+        midpoint_ellipse(canvas, xc, yc, ra, rb, color, drawMode)
+    elif alg == 3:
+        bresenham_ellipse(canvas, xc, yc, ra, rb, color, drawMode)
+    else:
+        standard_oval(canvas, xc, yc, ra, rb, color)
+        return
+
+
+def add_circle(canvas, algorithm, xc, yc, r, color, drawMode=True):
+    try:
+        alg = algorithm.get()
+    except AttributeError:
+        alg = algorithm
+
+    if alg == 0:
+        canonical_сircle(canvas, xc, yc, r, color, drawMode)
+    elif alg == 1:
+        parameter_circle(canvas, xc, yc, r, color, drawMode)
+    elif alg == 2:
+        midpoint_circle(canvas, xc, yc, r, color, drawMode)
+    elif alg == 3:
+        bresenham_circle_octant(canvas, xc, yc, r, color, drawMode)
+    else:
+        standard_oval(canvas, xc, yc, r, r, color)
+        return

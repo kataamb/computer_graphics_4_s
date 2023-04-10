@@ -2,9 +2,33 @@ import time
 from matplotlib import pyplot as plt
 import numpy as np
 
-from algorithms import add_circle, add_ellipse
-from config import CANVAS_WIDTH, CANVAS_HEIGHT
+from draw_algorithms import add_circle, add_ellipse
 import tkinter as tk
+
+MAIN_COLOUR = "#2b2b2b"
+MAIN_FRAME_COLOR = "#313335"
+MAIN_COLOUR_LABEL_BG = "purple"
+MAIN_COLOUR_LABEL_TEXT = "white"
+CANVAS_COLOUR = "lightblue"
+LINE_COLOUR = "black"
+
+COLUMNS = 35
+
+WINDOW_WIDTH = 1900
+WINDOW_HEIGHT = 1000
+
+DATA_SITUATION = 1.1/4
+BORDERS_SPACE = 10
+
+DATA_FRAME_WIGHT = WINDOW_WIDTH * DATA_SITUATION - BORDERS_SPACE
+DATA_FRAME_HEIGHT = WINDOW_HEIGHT - 2 * BORDERS_SPACE
+
+CANVAS_SITUATION = 1 - DATA_SITUATION
+CANVAS_WIDTH = WINDOW_WIDTH * CANVAS_SITUATION - 2 * BORDERS_SPACE
+CANVAS_HEIGHT = WINDOW_HEIGHT - 2 * BORDERS_SPACE
+
+
+
 
 NUMBER_OF_RUNS = 100
 MAX_RADIUS = 10000
@@ -46,13 +70,13 @@ def time_comparison(canvas, colour, figure):
             rb = STEP
 
             for j in range(MAX_RADIUS // STEP):
-                if figure == "ellipse":
+                if figure == "ellipse" or figure == "circle":
                     time_start[j] += time.time()
                     add_ellipse(canvas, i, xc, yc, ra, rb, colour, drawMode=False)
                     time_end[j] += time.time()
 
                     rb += STEP
-                elif figure == "circle":
+                elif figure == "_":
                     time_start[j] += time.time()
                     add_circle(canvas, i, xc, yc, ra, colour, drawMode=False)
                     time_end[j] += time.time()
