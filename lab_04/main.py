@@ -46,56 +46,99 @@ def define_alg_by_id(alg_id, mode):
 
 def draw_circle(actions, output):
     center = actions.ellips_frame.get_center()
-    radius = actions.ellips_frame.get_radius()
-    alg_id = actions.algos_frame.get_algorithm()
-    algorithm = define_alg_by_id(alg_id, 'circle')
-    canva = output.get_canva()
-    color = actions.color_frame.get_line_color()
-
-    if not(center !=0 and radius !=0 and algorithm !=0 and canva !=0 and color !=0):
+    if not(center !=0 ):
         return
+    radius = actions.ellips_frame.get_radius()
+    if not(radius !=0 ):
+        return
+    alg_id = actions.algos_frame.get_algorithm()
+    if not (radius != 0):
+        return
+    algorithm = define_alg_by_id(alg_id, 'circle')
+    if not(algorithm !=0):
+        return
+    canva = output.get_canva()
+    if not(canva !=0 ):
+        return
+    color = actions.color_frame.get_line_color()
+    if not(color !=0):
+        return
+
     draw.circle_by_algotithm(canva, algorithm, center[0], center[1], radius, color)
 
 def draw_ellipse(actions, output):
     center = actions.ellips_frame.get_center()
+    if not(center !=0 ):
+        return
     ab = actions.ellips_frame.get_ellipse_parameters()
+    if not(ab !=0):
+        return
     alg_id = actions.algos_frame.get_algorithm()
     algorithm = define_alg_by_id(alg_id, 'ellipse')
-    canva = output.get_canva()
-    color = actions.color_frame.get_line_color()
-
-    if not (center !=0 and ab !=0 and algorithm !=0 and canva !=0  and color !=0):
+    if not(algorithm !=0):
         return
+
+    canva = output.get_canva()
+    if not(canva !=0 ):
+        return
+    color = actions.color_frame.get_line_color()
+    if not(color !=0):
+        return
+
     draw.ellipse_by_algotithm(canva, algorithm, center[0], center[1], ab[0], ab[1], color)
 
 def draw_circle_spectrum(actions, output):
     center = actions.ellips_frame.get_center()
+    if not (center != 0):
+        return
     radius = actions.spectrum_frame.get_start_radius()
+    if not (radius != 0):
+        return
     alg_id = actions.algos_frame.get_algorithm()
     algorithm = define_alg_by_id(alg_id, 'circle')
-    step = actions.spectrum_frame.get_step()
-    count = actions.spectrum_frame.get_number_figures()
-
-    canva = output.get_canva()
-    color = actions.color_frame.get_line_color()
-
-    if not(center != 0 and radius !=0  and algorithm != 0 and canva !=0 and color != 0):
+    if not (algorithm != 0):
         return
+    step = actions.spectrum_frame.get_step()
+    if not (step != 0):
+        return
+    count = actions.spectrum_frame.get_number_figures()
+    if not (count != 0):
+        return
+    canva = output.get_canva()
+    if not (canva != 0):
+        return
+    color = actions.color_frame.get_line_color()
+    if not (color != 0):
+        return
+
+
     draw.spectrumCircleBy_algorith(canva, algorithm, center[0], center[1], radius, step, count, color)
 
 def draw_ellipse_spectrum(actions, output):
     center = actions.ellips_frame.get_center()
+    if not (center != 0):
+        return
     ab = actions.spectrum_frame.get_start_ellipse_parameters()
+    if not (ab != 0):
+        return
     alg_id = actions.algos_frame.get_algorithm()
     algorithm = define_alg_by_id(alg_id, 'ellipse')
+    if not (algorithm != 0):
+        return
     step = actions.spectrum_frame.get_step()
+    if not (step != 0):
+        return
     count = actions.spectrum_frame.get_number_figures()
+    if not (count != 0):
+        return
 
     canva = output.get_canva()
-    color = actions.color_frame.get_line_color()
-
-    if  not(center != 0 and ab != 0 and algorithm != 0 and canva != 0 and color != 0):
+    if not (canva != 0):
         return
+    color = actions.color_frame.get_line_color()
+    if not (color != 0):
+        return
+
     draw.spectrumEllipseBy_algorith(canva, algorithm, center[0], center[1], ab[0], ab[1], step, count, color)
 
 

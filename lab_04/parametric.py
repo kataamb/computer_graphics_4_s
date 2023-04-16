@@ -16,7 +16,6 @@ def parameter_circle(canvas, xc, yc, r, colour, draw):
         y = yc + r * m.sin(i)
 
         if draw:
-            # set_pixel(canvas, x, y, color)
             draw_simetric_pixels(canvas, [x, y, colour], xc, yc, circle=True)
 
         i += step
