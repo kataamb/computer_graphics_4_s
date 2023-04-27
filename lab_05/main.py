@@ -4,10 +4,12 @@ import interface as inter
 import tkinter.messagebox as box
 import tkinter.colorchooser as color_chooser
 
-from algrorithm import CAP_algorithm_with_ordered_list_of_edges, Point
+from fill_algorithm import CAP_algorithm_with_ordered_list_of_edges, y_group_algorithm_with_ordered_list_of_edges
 import tkinter as tk
 from tkinter import colorchooser, messagebox
 from config import *
+
+import copy
 
 from point import*
 import time
@@ -20,31 +22,25 @@ MOUSE_RIGHT = '<Button-3>'
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-def clear_screen(allFigures, currentFigure, actions_frame, canvas_frame):
-    allFigures.clear()
-    currentFigure.clear()
-    canvas_frame.redraw_canva()
-    actions_frame.keyboard_frame.points_list_box.delete(0, tk.END)
-
 
 
 def fill_all_figures(allFigures, currentFigure, actions_frame, canvas_frame):
+    print(allFigures)
     if not allFigures and not currentFigure:
         messagebox.showwarning("Предупреждение!", "Фигура не введена для закраски!")
-    elif not allFigures and  currentFigure:
+    elif not allFigures and currentFigure:
         messagebox.showwarning("Предупреждение!", "Фигура не замкнута для закраски!")
     else:
         delay = False
-        if methodDraw.get() == 0:
+        if actions_frame.drawing_mode_frame.get_mode() == 0:
             delay = True
         time_start = time.time()
-        CAP_algorithm_with_ordered_list_of_edges(canvasField, allFigures, colour=LINE_COLOUR, delay=delay)
+        y_group_algorithm_with_ordered_list_of_edges(canvas_frame.canva, allFigures, colour=LINE_COLOUR, delay=delay)
         time_end = time.time() - time_start
         if round(time_end * 1000, 2) < 1000:
-            timeLabel["text"] = "Время закраски: " + str(round(time_end * 1000, 2)) + " mc."
+            actions_frame.time_frame.set_time("Время закраски: " + str(round(time_end * 1000, 2)) + " mc.")
         else:
-            timeLabel["text"] = "Время закраски: " + str(round(time_end, 2)) + " c."
-
+            actions_frame.time_frame.set_time("Время закраски: " + str(round(time_end, 2)) + " c.")
 
 
 #---------------------------------------------------------------------------------------------
@@ -60,7 +56,6 @@ def findIndexForListPointScroll(allArraysFigure, currentArray):
 
 def add_point(x, y, allFigures, currentFigure, points_frame, canva_frame):
     if Point(x, y) not in currentFigure:
-        # canvasField.create_text(x, y - 10, text=(str(x) + " " + str(y)))
         if currentFigure:
             canva_frame.canva.create_line(currentFigure[-1].x, currentFigure[-1].y, x, y)
 
@@ -70,6 +65,11 @@ def add_point(x, y, allFigures, currentFigure, points_frame, canva_frame):
     else:
         messagebox.showwarning("Предупреждение!", "Точка с такими координатами фигуры уже введена!")
 # ------------------------------------------------------------------------------------------------------------------------
+def clear_screen(allFigures, currentFigure, actions_frame, canvas_frame):
+    allFigures.clear()
+    currentFigure.clear()
+    canvas_frame.redraw_canva()
+    actions_frame.keyboard_frame.points_list_box.delete(0, tk.END)
 
 def set_color_screen(color_frame, canva_frame):
     canva = canva_frame.get_canva()
@@ -111,13 +111,16 @@ def connect_figure_canvas(event, allFigures, currentFigure, points_frame, canva_
 
         points_frame.points_list_box.insert(tk.END, "------------Closed------------")
 
-        allFigures.append(currentFigure)
+        allFigures.append(copy.deepcopy(currentFigure)) # а то затирается после следующей строчки
         currentFigure.clear()
+
+
     elif len(currentFigure) == 0:
         messagebox.showwarning("Предупреждение!", "Точки фигуры не введены!")
     else:
         messagebox.showwarning("Предупреждение!",
                                "Такую фигуру нельзя замкнуть!\nНеобходимо как минимум, чтобы у фигуры было 3 точки!")
+
 
 
 
@@ -135,6 +138,7 @@ def connect_figure_keyboard(allFigures, currentFigure, points_frame, canva_frame
     else:
         messagebox.showwarning("Предупреждение!",
                                "Такую фигуру нельзя замкнуть!\nНеобходимо как минимум, чтобы у фигуры было 3 точки!")
+
 
 
 '''
@@ -171,6 +175,7 @@ if __name__ == '__main__':
                            lambda event, frame = actions_part.keyboard_frame,
                                 canvas = output_part: connect_figure_canvas(event, allFigures, currentFigure, frame, canvas))
 
+    actions_part.btn_fill_figure.config(command = lambda: fill_all_figures(allFigures, currentFigure, actions_part, output_part))
     actions_part.btn_clear.config(command = lambda: clear_screen(allFigures, currentFigure, actions_part, output_part))
     actions_part.btn_info.config(command=lambda: actions_part.print_info())
 

@@ -312,16 +312,22 @@ class AnalyzisFrame(OptionFrame):
         self.color = color
         self.text_color = text_color
 
-        self.btn_circle_time = tk.Button(self, text = 'Окружность')
-        self.btn_ellips_time = tk.Button(self, text = 'Эллипс')
+        self.lbl_time = tk.Label(self)
 
         self.analyzis_interface()
 
     def analyzis_interface(self):
-        self.btn_circle_time.config(bg = self.color, font = Font, fg = self.text_color)
-        self.btn_circle_time.pack(side = 'left', expand = True, fill = 'x')
-        self.btn_ellips_time.config(bg=self.color, font=Font, fg=self.text_color)
-        self.btn_ellips_time.pack(side = 'left', expand = True, fill = 'x')
+        self.lbl_time_info = tk.Label(self, text = 'Время закраски:')
+        self.lbl_time_info.config(bg=self.color, font=Font, fg=self.text_color)
+        self.lbl_time_info.pack(side='left', expand=True, fill='x')
+
+        self.lbl_time.config(bg = self.color, font = Font, fg = self.text_color)
+        self.lbl_time.pack(side='left', expand=True, fill='x')
+
+    def set_time(self, string):
+        self.lbl_time.config(text = string)
+
+
 
 ##################################################################################################
 
