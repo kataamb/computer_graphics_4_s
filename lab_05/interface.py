@@ -29,6 +29,7 @@ class CanvasFrame(MainFrame):
         self.color = color
         super().__init__(root, expand, color)
         self.canva = tk.Canvas(self, scrollregion=(-1000,-1000,1000,1000))
+        #self.canva.bind(MOUSE_LEFT, self.get_point_canva)
         self.line_color = 'black'
 
         # config Canvas to be scrollable
@@ -84,6 +85,12 @@ class CanvasFrame(MainFrame):
         self.canva.delete("all")
         self.draw_axes()
 
+    def get_point_canva(self, event):
+        x = event.x
+        y = event.y
+
+
+
 ######################################################################################################################
 class OptionFrame(tk.Frame):
     def __init__(self, parent_frame, name = 'Option', color = None, text_color = 'black'):
@@ -97,12 +104,11 @@ class OptionFrame(tk.Frame):
     def option_configurations(self):
         label_name = tk.Label(self, text = self.name, bg = 'lightslategray',
                               fg = self.name_color, font = FontHeader)
-        label_name.pack(expand = True, fill = 'x')
-        self.pack(fill='both', expand=True, side='top')
+        label_name.pack(fill = 'x', side = 'top')
+        self.pack(fill='both', expand = True, side='top')
         if self.color:
             self.config(bg=self.color)
         self.config(highlightbackground="black", highlightthickness=1)
-
 
 
 
@@ -149,28 +155,32 @@ class DrawingModeFrame(OptionFrame):
         self.color = color
         self.text_color = text_color
 
+        self.radio_btns_frame = tk.Frame(self)
+
         self.MODES = [('С задержкой', '1'), ('Без задержки', '2')]
 
 
-        self.mode = tk.StringVar() # какой алгоритм выбран
+        self.mode = tk.StringVar()
         self.mode.set("1")
-        self.modes = self.create_modes_radios()#[self.create_radio(c) for c in self.ALGOS]
+        self.modes = self.create_modes_radios()
 
         self.drawing_modes_interface()
 
-    def create_radio(self, option):
+    def create_radio(self, option, frame):
         text, value = option
-        return tk.Radiobutton(self, bg = self.color, selectcolor = self.color,
+        return tk.Radiobutton(frame, bg = self.color, selectcolor = self.color,
                               text=text, value=value, variable=self.mode, font = Font, fg = 'white')
 
     def create_modes_radios(self):
         modes = []
         for i in self.MODES:
-            modes.append( self.create_radio(i))
+            modes.append( self.create_radio(i, self.radio_btns_frame))
 
         return modes
 
     def drawing_modes_interface(self):
+        self.radio_btns_frame.config(bg = self.color)
+        self.radio_btns_frame.pack(expand = True)
         for button in self.modes:
             button.pack(side = 'left', padx=10, pady=5)
             button.config(font = Font)
@@ -186,190 +196,117 @@ class KeyboardInputFrame(OptionFrame):
         self.color = color
         self.text_color = text_color
 
-        self.steps = tk.StringVar()
-        self.fig_num = tk.StringVar()
-        self.start_radius =  tk.StringVar()
-        self.start_a_coeff = tk.StringVar()
-        self.start_b_coeff = tk.StringVar()
-
-        self.common_frame = tk.Frame(self)
-        self.difference_frame = tk.Frame(self)
-
-        self.step_frame = tk.Frame(self.common_frame)
-        self.num_frame = tk.Frame(self.common_frame)
-
-        self.circle_frame = tk.Frame(self.difference_frame)
-        self.ellipse_frame = tk.Frame(self.difference_frame)
+        self.x = tk.StringVar()
+        self.y = tk.StringVar()
 
 
-        self.btn_circles = tk.Button(self.circle_frame, text='Спектр окружностей')
-        self.btn_ellipses = tk.Button(self.ellipse_frame, text='Спектр эллипсов')
+        self.points = []
 
-        self.radius_frame = tk.Frame(self.circle_frame)
+        self.coord_frame = tk.Frame(self)
+        self.btns_frame = tk.Frame(self)
+        self.points_list_frame = tk.Frame(self)
 
-
-        self.raduis = tk.Entry(self.radius_frame, textvariable= self.start_radius)
-        self.a_frame = tk.Frame(self.ellipse_frame)
-        self.b_frame = tk.Frame(self.ellipse_frame)
-
-        self.a_coeff_entry = tk.Entry(self.a_frame, textvariable= self.start_a_coeff)
-        self.b_coeff_entry = tk.Entry(self.b_frame, textvariable= self.start_b_coeff)
-        self.figure_number = tk.Entry(self.num_frame, textvariable= self.fig_num)
-        self.step = tk.Entry(self.step_frame, textvariable= self.steps)
-
-        self.spectrum_interface()
-
-    def spectrum_interface(self):
-        self.pack_frames_interface()
-        self.common_interface()
-
-        self.circle_input_interface()
-        self.ellipse_input_interface()
+        self.labels_frame = tk.Frame(self.coord_frame)
 
 
-    def pack_frames_interface(self):
-        self.common_frame.config(bg=self.color)
-        self.common_frame.pack(fill='both', expand=False, side='top')
+        self.entries_frame = tk.Frame(self.coord_frame)
+        self.point_x = tk.Entry(self.entries_frame, textvariable=self.x)
+        self.point_y = tk.Entry(self.entries_frame, textvariable=self.y)
 
-        self.difference_frame.config(bg=self.color)
-        self.difference_frame.pack(fill='both', expand=False, side='top')
+        self.btn_add_point = tk.Button(self.btns_frame, text = 'Добавить точку') #, command = self.add_point
+        self.btn_connect_figure = tk.Button(self.btns_frame, text='Замкнуть фигуру')
 
-        self.step_frame.config(bg=self.color)
-        self.step_frame.pack(fill='both', expand=False, side='left')
-        self.num_frame.config(bg=self.color)
-        self.num_frame.pack(fill='both', expand=False, side='left')
+        self.points_list_box = tk.Listbox(self.points_list_frame)
 
-        self.circle_frame.config(bg=self.color, relief="groove", borderwidth=2)
-        self.circle_frame.pack(fill='both', expand=False, side='left')
+        self.all_interface()
 
-        self.radius_frame.config(bg=self.color)
-        self.radius_frame.pack(fill='both', expand=False, side='top')
+    def all_interface(self):
+        self.pack_interface()
+        self.coordinates_interface()
+        self.btns_interface()
+        self.points_list_interface()
 
-        self.ellipse_frame.config(bg=self.color, relief="groove", borderwidth=2)
-        self.ellipse_frame.pack(fill='both', expand=False, side='right')
+    def pack_interface(self):
+        self.coord_frame.config(bg=self.color) #self.color
+        self.coord_frame.pack(fill='both', expand=False, side='top')
 
-        self.a_frame.config(bg=self.color)
-        self.a_frame.pack(fill='both', expand=False, side='top')
-        self.b_frame.config(bg=self.color)
-        self.b_frame.pack(fill='both', expand=False, side='top')
+        self.btns_frame.config(bg=self.color)
+        self.btns_frame.pack(fill='both', expand=False, side='top')
 
-
-
-    def common_interface(self):
-        label_step = tk.Label(self.step_frame, text='Шаг:')
-        label_step.pack(side='left', padx=10, pady=5, fill="x")
-        self.step.pack(side='left', padx=10, pady=5)
-
-        label_num = tk.Label(self.num_frame, text='Количество фигур:')
-        label_num.pack(side='left', padx=10, pady=5, fill="x")
-        self.figure_number.pack(side='left', padx=10, pady=5)
-
-        for i in [label_step, label_num]:
-            i.config(bg = self.color, fg = self.text_color, font = Font)
+        self.points_list_frame.config(bg=self.color)
+        self.points_list_frame.pack(fill='both', expand=False, side='top')
 
 
-    def circle_input_interface(self):
-        radius_label = tk.Label(self.radius_frame, text='Начальный радиус:')
-        radius_label.pack(side='left', padx=10, pady=5, fill="x")
-        self.raduis.pack(side='left', padx=10, pady=5)
+    def coordinates_interface(self):
+        self.labels_frame.config(bg=self.color)
+        self.labels_frame.pack(fill='both', expand=False, side='top')
 
-        self.btn_circles.pack(side='bottom', padx=10, pady=5, fill="y")
+        label_x = tk.Label(self.labels_frame, text = 'X:', bg=self.color, font = Font)
+        label_x.pack(side = 'left', expand = True)
+        label_y = tk.Label(self.labels_frame, text='Y:', bg=self.color, font = Font)
+        label_y.pack(side = 'left', expand = True)
 
-        for i in [radius_label, self.btn_circles]:
-            i.config(bg = self.color, fg = self.text_color, font = Font)
+        self.entries_frame.config(bg=self.color)
+        self.entries_frame.pack(fill='both', expand=False, side='top')
 
-    def ellipse_input_interface(self):
-
-        acoeff_label = tk.Label(self.a_frame, text='Начальный А:')
-        acoeff_label.pack(side='left', padx=10, pady=5, fill="x")
-        self.a_coeff_entry.pack(side='left', padx=10, pady=5)
-
-
-        bcoeff_label = tk.Label(self.b_frame, text='Начальный B:')
-        bcoeff_label.pack(side='left', padx=10, pady=5, fill="x")
-        self.b_coeff_entry.pack(side='left', padx=10, pady=5)
-
-        self.btn_ellipses.pack(fill='both', expand=True, side='top')
-
-        for i in [acoeff_label, bcoeff_label, self.btn_ellipses]:
-            i.config(bg = self.color, fg = self.text_color, font = Font)
+        self.point_x.pack(side='left', expand=True)
+        self.point_y.pack(side='left', expand=True)
 
 
-    #
-    def get_start_radius(self):
-        radius = self.start_radius.get()
+    def btns_interface(self):
+        self.btn_add_point.config(bg = self.color, font = Font, fg = self.text_color)
+        self.btn_add_point.pack(fill='both', expand=True, side = 'left')
+        self.btn_connect_figure.config(bg=self.color, font=Font, fg=self.text_color)
+        self.btn_connect_figure.pack(fill='both', expand=True, side='left')
 
-        try:
-            radius = int(radius)
-        except Exception:
-            messagebox.showwarning("Ошибка",
-                                   "Неверно задан начальный радиус окружности!\n"
-                                  "Ожидался ввод целых чисел.")
-            return 0
-        if (radius <= 0):
-            messagebox.showwarning("Ошибка",
-                                   "Неверно задан радиус окружности!\n"
-                                   "Радиус не может быть меньше 1.")
-            return 0
-        return radius
+    def points_list_interface(self):
+        self.make_listbox_scrollable()
+        self.points_list_box.pack(fill='both', expand=True, side='left')
 
-    def get_start_ellipse_parameters(self):
-        a = self.start_a_coeff.get()
-        b = self.start_b_coeff.get()
-        try:
-            a = int(a)
-            b = int(b)
-            if a <= 0 or b <= 0:
-                messagebox.showwarning("Ошибка",
-                                       "Неверно заданы радиусы A и B эллипса!\nA и B не могут быть меньше 1.\n")
-                return 0
-        except Exception:
-            messagebox.showwarning("Ошибка",
-                                   "Неверно заданы радиусы A и B эллипса!\n"
-                                   "Ожидался ввод целых чисел.")
-            return 0
+    def make_listbox_scrollable(self):
+        '''
+        config Listbox to be scrollable
+        '''
 
-        return(a, b)
+        vbar = tk.Scrollbar(self.points_list_frame, orient='vertical')
+        vbar.pack(side='left', fill='y')
+        vbar.config(command=self.points_list_box.yview)
 
+        self.points_list_box.config(yscrollcommand=vbar.set)
 
-    def get_step(self):
-        step_ret = self.steps.get()
+        self.points_list_box.pack(side='left', expand=True, fill='both')
 
-        try:
-            step_ret = int(step_ret)
-        except Exception:
-            messagebox.showwarning("Ошибка",
-                                   "Неверно задан шаг спектра!\n"
-                                   "Ожидался ввод целого числа.")
-            return 0
-        if (step_ret <= 0):
-            messagebox.showwarning("Ошибка",
-                                   "Неверно задан шаг спектра!\n"
-                                   "Шаг не может быть меньше 1.")
-            return 0
-        return step_ret
+    def get_coordinate(self):
+        return (self.x.get(), self.y.get())
 
-    def get_number_figures(self):
-        num_fig = self.fig_num.get()
-
-        try:
-            num_fig = int(num_fig)
-        except Exception:
-            messagebox.showwarning("Ошибка",
-                                   "Неверно задано количество фигур!\n"
-                                   "Ожидался ввод целого числа.")
-            return 0
-        if (num_fig <= 0):
-            messagebox.showwarning("Ошибка",
-                                   "Неверно задано количество фигур!\n"
-                                   "Их количество не может быть меньше 1.")
-            return 0
-        return num_fig
-
+    def add_point(self):
+        pair = self.get_coordinate()
+        if pair == 0:
+            return
+        x, y = pair
+        self.points.append((x, y))
+        self.points_list_box.insert(tk.END, "{:3d}) X = {:4d}; Y = {:4d}".format(len(self.points), int(x), int(y)))
 
 
 
 class MouseInputFrame(OptionFrame):
+    def __init__(self, parent_frame, name = 'Option', color = 'darkslategray', text_color = 'white'):
+        super().__init__(parent_frame, name, color, text_color)
+        self.color = color
+        self.text_color = text_color
+
+        self.btn_circle_time = tk.Label(self, text = 'Добавить точку - левая кнопка мыши')
+        self.btn_ellips_time = tk.Label(self, text = 'Замкнуть фигуру - правая кнопка мыши')
+
+        self.analyzis_interface()
+
+    def analyzis_interface(self):
+        self.btn_circle_time.config(bg = self.color, font = Font, fg = self.text_color)
+        self.btn_circle_time.pack(side = 'top', expand = True, fill = 'x')
+        self.btn_ellips_time.config(bg=self.color, font=Font, fg=self.text_color)
+        self.btn_ellips_time.pack(side = 'top', expand = True, fill = 'x')
+
+class AnalyzisFrame(OptionFrame):
     def __init__(self, parent_frame, name = 'Option', color = 'darkslategray', text_color = 'white'):
         super().__init__(parent_frame, name, color, text_color)
         self.color = color
@@ -393,11 +330,14 @@ class ActionsFrame(MainFrame):
         self.color = color
         super().__init__(root)
 
+        self.Figures = []
 
         self.color_frame = ColorFrame(self, 'Цвета')
         self.drawing_mode_frame = DrawingModeFrame(self, 'Режим закраски')
-        self.drawing_mode_frame = KeyboardInputFrame(self, 'Ввод с клавиатуры')
-        self.drawing_mode_frame = MouseInputFrame(self, 'Ввод мышью')
+        self.keyboard_frame = KeyboardInputFrame(self, 'Ввод с клавиатуры')
+        self.mouse_frame = MouseInputFrame(self, 'Ввод мышью')
+        self.time_frame = AnalyzisFrame(self, 'Измерение времени')
+
 
         self.btn_fill_figure = tk.Button(self, text='Выполнить закраску фигуры', bg='darkslategray', fg='white', font=('Arial', 20))
 
