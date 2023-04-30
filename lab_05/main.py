@@ -35,12 +35,14 @@ def fill_all_figures(allFigures, currentFigure, actions_frame, canvas_frame):
         if actions_frame.drawing_mode_frame.get_mode() == 0:
             delay = True
         time_start = time.time()
-        y_group_algorithm_with_ordered_list_of_edges(canvas_frame.canva, allFigures, colour=LINE_COLOUR, delay=delay)
+        y_group_algorithm_with_ordered_list_of_edges(canvas_frame.canva, allFigures, colour=canvas_frame.line_color, delay=delay)
         time_end = time.time() - time_start
         if round(time_end * 1000, 2) < 1000:
             actions_frame.time_frame.set_time("Время закраски: " + str(round(time_end * 1000, 2)) + " mc.")
         else:
             actions_frame.time_frame.set_time("Время закраски: " + str(round(time_end, 2)) + " c.")
+
+        allFigures.clear()
 
 
 #---------------------------------------------------------------------------------------------
@@ -57,7 +59,7 @@ def findIndexForListPointScroll(allArraysFigure, currentArray):
 def add_point(x, y, allFigures, currentFigure, points_frame, canva_frame):
     if Point(x, y) not in currentFigure:
         if currentFigure:
-            canva_frame.canva.create_line(currentFigure[-1].x, currentFigure[-1].y, x, y)
+            canva_frame.canva.create_line(currentFigure[-1].x, currentFigure[-1].y, x, y , fill = canva_frame.line_color)
 
         index = findIndexForListPointScroll(allFigures, currentFigure)
         points_frame.points_list_box.insert(tk.END,  "{:3d}) X = {:4d}; Y = {:4d}".format(index + 1, x, y))
@@ -89,7 +91,7 @@ def get_point_canvas(event, allFigures, currentFigure, points_frame, canva_frame
 
     if (len(points_frame.points) > 1):
         canva_frame.canva.create_line(points_frame.points[-2][0], points_frame.points[-2][1],
-                                      points_frame.points[-1][0], points_frame.points[-1][1])
+                                      points_frame.points[-1][0], points_frame.points[-1][1], fill = canva_frame.line_color)
 
 
 def get_point_keyboard(allFigures, currentFigure, points_frame, canva_frame):
@@ -107,7 +109,7 @@ def get_point_keyboard(allFigures, currentFigure, points_frame, canva_frame):
 def connect_figure_canvas(event, allFigures, currentFigure, points_frame, canva_frame):
     if len(currentFigure) > 2:
         canva_frame.canva.create_line(currentFigure[-1].x, currentFigure[-1].y,
-                                      currentFigure[0].x, currentFigure[0].y)
+                                      currentFigure[0].x, currentFigure[0].y, fill = canva_frame.line_color)
 
         points_frame.points_list_box.insert(tk.END, "------------Closed------------")
 
@@ -127,9 +129,12 @@ def connect_figure_canvas(event, allFigures, currentFigure, points_frame, canva_
 def connect_figure_keyboard(allFigures, currentFigure, points_frame, canva_frame):
     if len(currentFigure) > 2:
         canva_frame.canva.create_line(currentFigure[-1].x, currentFigure[-1].y,
-                                      currentFigure[0].x, currentFigure[0].y)
+                                      currentFigure[0].x, currentFigure[0].y, fill = canva_frame.line_color)
 
         points_frame.points_list_box.insert(tk.END, "------------Closed------------")
+
+        allFigures.append(copy.deepcopy(currentFigure))  # а то затирается после следующей строчки
+        currentFigure.clear()
 
         allFigures.append(currentFigure)
         currentFigure.clear()
@@ -164,7 +169,7 @@ if __name__ == '__main__':
     actions_part.color_frame.chng_screen.config(command = lambda: set_color_screen(actions_part.color_frame, output_part))
     actions_part.color_frame.chng_line.config(command=lambda: set_color_line(actions_part.color_frame, output_part))
 
-    actions_part.keyboard_frame.btn_add_point.config(command = lambda: add_point(allFigures, currentFigure, actions_part.keyboard_frame, output_part))
+    actions_part.keyboard_frame.btn_add_point.config(command = lambda: get_point_keyboard(allFigures, currentFigure, actions_part.keyboard_frame, output_part))
     actions_part.keyboard_frame.btn_connect_figure.config(
         command=lambda: connect_figure_keyboard(allFigures, currentFigure, actions_part.keyboard_frame, output_part))
 
