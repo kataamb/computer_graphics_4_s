@@ -1,16 +1,37 @@
-# This is a sample Python script.
+import tkinter as tk
+import interface as inter
+import tkinter.messagebox as box
+import tkinter.colorchooser as color_chooser
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from btn_actions import*
+
+WIDTH = 1400
+HEIGHT = 800
+
+MOUSE_LEFT = '<1>'
+MOUSE_RIGHT = '<Button-3>'
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    lines = []
+    rectangle = [-1, -1, -1, -1]
+    is_set_rectangle = False
+
+    main_window = tk.Tk()
+    main_window.geometry("{}x{}+1+5".format(WIDTH, HEIGHT))
+
+    main_window.minsize(WIDTH * 3 // 4, HEIGHT * 3 // 4)
+    main_window.maxsize(WIDTH * 3//2, HEIGHT*3//2)
+
+    output_part = inter.CanvasFrame(main_window)
+    actions_part = inter.ActionsFrame(main_window)
+
+
+    # config buttons with actions(functions)
+    #actions_part.btn_clear.config(command=lambda: clear_screen(allFigures, currentFigure, actions_part, output_part, list_part))
+    #actions_part.btn_info.config(command=lambda: actions_part.print_info())
+
+
+    main_window.title("ЛР7")
+    main_window.mainloop()
