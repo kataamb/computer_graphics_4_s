@@ -118,6 +118,8 @@ class ColorFrame(OptionFrame):
         self.text_color = text_color
 
         self.line_color = 'black'
+        self.cut_color = "blue"
+        self.vis_color = 'red'
 
 
         self.color_line_frame = tk.Frame(self, bg = self.color)
@@ -163,9 +165,21 @@ class ColorFrame(OptionFrame):
     def set_line_color(self, color):
         self.line_color = color
 
+    def set_vis_color(self, color):
+        self.vis_color = color
+
+    def set_cut_color(self, color):
+        self.line_color = color
+
 
     def get_line_color(self):
         return self.line_color
+
+    def get_cut_color(self):
+        return self.cut_color
+
+    def get_vis_color(self):
+        return self.vis_color
 
 
 
