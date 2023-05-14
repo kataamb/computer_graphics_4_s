@@ -119,7 +119,7 @@ class ColorFrame(OptionFrame):
         self.text_color = text_color
 
         self.line_color = 'black'
-        self.cut_color = "blue"
+        self.cut_color = "light green"
         self.vis_color = 'red'
 
 
@@ -128,21 +128,21 @@ class ColorFrame(OptionFrame):
                                    font=Font, fg= text_color)
         self.line_label = tk.Label(self.color_line_frame, bg=self.color, text="Текущий цвет отрезка:",
                                    fg=text_color,   font=Font)
-        self.cur_line_color_label = tk.Label(self.color_line_frame, bg="black")
+        self.cur_line_color_label = tk.Label(self.color_line_frame, bg=self.line_color)
 
         self.color_visline_frame = tk.Frame(self, bg=self.color)
         self.chng_visline = tk.Button(self.color_visline_frame, text='Изменить цвет видимых', bg=self.color,
                                      font=Font, fg=text_color)
         self.visline_label = tk.Label(self.color_visline_frame, bg=self.color, text="Текущий цвет видимых:",
                                      fg=text_color, font=Font)
-        self.cur_visline_color_label = tk.Label(self.color_visline_frame, bg="red")
+        self.cur_visline_color_label = tk.Label(self.color_visline_frame, bg=self.vis_color)
 
         self.cutting_color_frame = tk.Frame(self, bg=self.color)
         self.chng_cutting = tk.Button(self.cutting_color_frame, text='Изменить цвет отсекателя', bg=self.color,
                                       font=Font, fg=text_color)
         self.cutting_label = tk.Label(self.cutting_color_frame, bg=self.color, text="Текущий цвет отсекателя",
                                       fg=text_color, font=Font)
-        self.cur_filling_color_label = tk.Label(self.cutting_color_frame, bg="black")
+        self.cur_filling_color_label = tk.Label(self.cutting_color_frame, bg=self.cut_color)
 
         self.color_interface()
 
@@ -170,7 +170,8 @@ class ColorFrame(OptionFrame):
         self.vis_color = color
 
     def set_cut_color(self, color):
-        self.line_color = color
+        self.cut_color = color
+        self.cur_filling_color_label.config(bg = self.cut_color)
 
 
     def get_line_color(self):
