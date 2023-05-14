@@ -33,13 +33,14 @@ class CanvasFrame(MainFrame):
         self.line_color = 'black'
 
         # config Canvas to be scrollable
-        self.make_canva_scrollable()
+        #self.make_canva_scrollable()
 
         self.canvas_interface()
 
 
     def canvas_interface(self):
         #self.canva.pack(fill='both', expand=True, side='left')
+        self.canva.pack(side='left', expand=True, fill='both')
         self.canva.config(bg = 'white')
         self.redraw_canva()
 
@@ -55,7 +56,7 @@ class CanvasFrame(MainFrame):
         vbar.config(command=self.canva.yview)
 
         self.canva.config(xscrollcommand=hbar.set, yscrollcommand=vbar.set)
-        self.canva.pack(side='left', expand=True, fill='both')
+
 
 
     def get_canva(self):
@@ -80,7 +81,7 @@ class CanvasFrame(MainFrame):
 
     def redraw_canva(self):
         self.canva.delete("all")
-        self.draw_axes()
+        #self.draw_axes()
 
     def get_point_canva(self, event):
         x = event.x
